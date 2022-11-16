@@ -3,6 +3,7 @@
 1. [ClimateWatch Data - Historical GHG Emissions Database](https://www.climatewatchdata.org/data-explorer/historical-emissions?historical-emissions-data-sources=cait&historical-emissions-gases=all-ghg&historical-emissions-regions=All%20Selected&historical-emissions-sectors=total-including-lucf%2Ctotal-including-lucf&page=1)
 2. [GHG Emissions for the US](https://www.fs.usda.gov/rds/archive/catalog/RDS-2022-0052)
 3. [Our World In Data](https://github.com/owid/co2-data)
+4. [ISO Codes](https://github.com/lukes/ISO-3166-Countries-with-Regional-Codes/blob/master/all/all.csv)
 
 ## Data Cleaning  
 
