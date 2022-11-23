@@ -69,3 +69,36 @@ FROM (
 )
 ranked_combined 
 WHERE ranked_combined.rank < 11 and sector = 'land-use_change_and_forestry';
+
+# Generate the Correlation Coeffcient Table 
+CREATE TABLE rate as 
+SELECT iso, year, co2 / treeloss as coeff 
+FROM combined 
+WHERE sector = "land-use_change_and_forestry"; 
+
+# Per Year, take the average global coeff rate 
+INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+SELECT year, AVG(coeff) as avg_coeff 
+FROM rate 
+WHERE treeloss >= 0
+GROUP BY year; 
+
+# Per Year, Per ISO, gather the countries with the highest coeff 
+INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+SELECT * FROM (
+    SELECT *, 
+    rank() over (PARTITION BY year ORDER by avg_coeff desc) as ranked 
+    FROM (
+        SELECT iso, year, AVG(coeff) as avg_coeff
+        FROM rate
+        WHERE treeLoss >= 0 
+        GROUP BY year, iso
+    ) grouped_rates
+) ranked_rates 
+WHERE ranked < 11; 
