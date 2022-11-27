@@ -8,6 +8,12 @@ SELECT COUNT(*) FROM ghg;
 SELECT COUNT(*) FROM tree; 
 SELECT COUNT(*) FROM combined; 
 
+# Generate the Correlation Coeffcient Table 
+CREATE TABLE rate as 
+SELECT iso, year, co2 / treeloss as coeff 
+FROM combined 
+WHERE sector = "land-use_change_and_forestry"; 
+
 # Top 10 Countries By Deforestation Per Year 
 INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
 ROW FORMAT DELIMITED
@@ -20,7 +26,7 @@ FROM (
     FROM combined
 )
 ranked_combined 
-WHERE ranked_combined.rank < 11 and sector = 'total_including_lucf';
+WHERE ranked_combined.rank < 4 and sector = 'total_including_lucf';
 
 # Top Countries By Total GHG Emissions Per Years 
 INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
@@ -34,7 +40,7 @@ FROM (
     FROM combined
 )
 ranked_combined 
-WHERE ranked_combined.rank < 11 and sector = 'total_including_lucf';
+WHERE ranked_combined.rank < 4 and sector = 'total_including_lucf';
 
 # Top Countries By GHG Emissions Per Year, Per Total, Per LUCF Sector 
 INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
@@ -48,7 +54,7 @@ FROM (
     FROM combined
 )
 ranked_combined 
-WHERE ranked_combined.rank < 11 and sector = 'land-use_change_and_forestry';
+WHERE ranked_combined.rank < 4 and sector = 'land-use_change_and_forestry';
 
 # Per Year, take the average global coeff rate 
 INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
@@ -75,4 +81,67 @@ SELECT * FROM (
         GROUP BY year, iso
     ) grouped_rates
 ) ranked_rates 
-WHERE ranked < 11; 
+WHERE ranked < 4; 
+
+# Generate Lag Table To Calculate YOY Growth 
+CREATE TABLE lag_total AS
+SELECT year, iso, co2, treeloss, 
+        LAG(co2, 1, 0) OVER (PARTITION BY iso ORDER by year) as growth 
+FROM combined
+WHERE sector = "total_including_lucf"; 
+
+CREATE TABLE lag_lucf AS
+SELECT year, iso, co2, treeloss, 
+        LAG(co2, 1, 0) OVER (PARTITION BY iso ORDER by year) as growth 
+FROM combined
+WHERE sector = "land-use_change_and_forestry"; 
+
+CREATE TABLE lag_tree AS
+SELECT year, iso, co2, treeloss, 
+        LAG(treeloss, 1, 0) OVER (PARTITION BY iso ORDER by year) as growth 
+FROM combined
+WHERE sector = "total_including_lucf"; 
+
+# Get YOY Growth In Terms of Treeloss (Globally)
+SELECT year, AVG(pct_change) as change_in_treeloss
+FROM (
+    SELECT *, 
+        ( (treeloss - growth) / growth) * 100 as pct_change
+    FROM lag_tree
+) as intermediate 
+GROUP BY year; 
+
+# Get YOY Growth in Total CO2 Emissions 
+SELECT year, AVG(pct_change) as change_in_total_ghg
+FROM (
+    SELECT iso, year, co2, growth, 
+        ( (co2 - growth) / growth) * 100 as pct_change
+    FROM lag_total
+) as intermediate 
+GROUP BY year; 
+
+# Get YOY Growth in LUCF CO2 Emissions 
+SELECT year, AVG(pct_change) as change_in_lucf_ghg
+FROM (
+    SELECT iso, year, co2, growth, 
+        ( (co2 - growth) / growth) * 100 as pct_change
+    FROM lag_lucf
+) as intermediate 
+GROUP BY year; 
+
+# Get The Top Countries By Treeloss Change Per Year
+INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
+SELECT iso, year, pct_change, rank 
+FROM (
+    SELECT iso, year, pct_change, 
+    rank() over (PARTITION BY year ORDER BY pct_change DESC) as rank 
+    FROM (
+        SELECT *, 
+        ( (treeloss - growth) / growth) * 100 as pct_change
+        FROM lag_tree
+    ) as intermediate
+) as final 
+WHERE final.rank < 4; 

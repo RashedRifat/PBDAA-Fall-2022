@@ -10,9 +10,3 @@ CREATE TABLE combined as
 SELECT tree.iso as iso, tree.year as year, tree.treeloss as treeloss, ghg.source as sector, ghg.co2 as co2 
 FROM tree JOIN ghg 
 ON (tree.iso = upper(ghg.iso) and tree.year = ghg.year); 
-
-# Generate the Correlation Coeffcient Table 
-CREATE TABLE rate as 
-SELECT iso, year, co2 / treeloss as coeff 
-FROM combined 
-WHERE sector = "land-use_change_and_forestry"; 
