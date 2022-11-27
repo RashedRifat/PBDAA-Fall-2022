@@ -103,6 +103,10 @@ FROM combined
 WHERE sector = "total_including_lucf"; 
 
 # Get YOY Growth In Terms of Treeloss (Globally)
+INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
 SELECT year, AVG(pct_change) as change_in_treeloss
 FROM (
     SELECT *, 
@@ -112,21 +116,31 @@ FROM (
 GROUP BY year; 
 
 # Get YOY Growth in Total CO2 Emissions 
+INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
 SELECT year, AVG(pct_change) as change_in_total_ghg
 FROM (
     SELECT iso, year, co2, growth, 
         ( (co2 - growth) / growth) * 100 as pct_change
     FROM lag_total
 ) as intermediate 
+WHERE intermediate.year > 2001
 GROUP BY year; 
 
 # Get YOY Growth in LUCF CO2 Emissions 
+INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+ROW FORMAT DELIMITED
+FIELDS TERMINATED BY ','
+STORED AS TEXTFILE
 SELECT year, AVG(pct_change) as change_in_lucf_ghg
 FROM (
     SELECT iso, year, co2, growth, 
         ( (co2 - growth) / growth) * 100 as pct_change
     FROM lag_lucf
 ) as intermediate 
+WHERE intermediate.year > 2001
 GROUP BY year; 
 
 # Get The Top Countries By Treeloss Change Per Year
@@ -144,4 +158,4 @@ FROM (
         FROM lag_tree
     ) as intermediate
 ) as final 
-WHERE final.rank < 4; 
+WHERE final.rank < 4 AND final.year > 2001; 
