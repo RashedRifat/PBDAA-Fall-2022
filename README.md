@@ -1,23 +1,24 @@
 # PBDAA-Fall-2022
 
-PBDAA-Fall-2022 Course Project (GHG Emissions and Deforestation). This README outlines our project, data sources, code and visualizations. We note each of these sections below.
+PBDAA-Fall-2022 Course Project (GHG Emissions and Deforestation). This README outlines the directory structure and also includes instructions as to how to build and run our code as well.
 
-## Project
+## TODO LIST 
 
-Please refer to the attached Project Proposal for details as to our project!
+* Complete README 
+* Add Julian Cleaning Code Output to submission/etl/jfa8735/output
 
-## Data Sources
+## Directory Structure
 
-Please refer to the attached Project Proposal for details as to our project!
+## Running The Project
 
-## Code
+### Initial Data Ingestion
 
-For our project, we utilized Hadoop MapReduce for our initial data cleaning, where we then loaded our datasets into Hive. From Hive, we analyzed our data and wrote the results of our analysis into several output files, from which we created visualizations within Python. Our code is organized in the following directories. 
+### Hive Data Ingestion
 
-* `initial` - this directory contains our data sources and the initial code we used to clean our data set.
-* `hive` - this directory contains the queries we used to load and process our data (hive_queries.sh)
-* `viz` - this directory contains the Python code to create visualizations from the data
+### Profiling Data Steps
 
-## Visualizations  
+### Cleaning Data Steps
 
-* Note that we used Python to generate our visualizations. You may find our code in `viz/main.py` and our diagrams in `viz/output`
+### Hive Queries and Output
+
+### Visualizations

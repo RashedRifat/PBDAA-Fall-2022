@@ -1,0 +1,2 @@
+For instructions regarding data ingestion, please refer to the README.md 
+file, located at project root (/). 
