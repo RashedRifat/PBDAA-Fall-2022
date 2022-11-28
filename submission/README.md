@@ -30,6 +30,7 @@ PBDAA-Fall-2022 Course Project (GHG Emissions and Deforestation).
     * `rmr557`: this folder contains all screenshots used to clean and profile the ghg_emissions dataset
   * `data_ingest`: this folder contains all of the screenshots displaying the ingestion of the data into Hive.
   * `hive_etl`: this folder contains all of the screenshots displaying the running of our analysis
+* `test_code`: this folder contains unused/testing code. 
 
 ## Running The Project
 
