@@ -15,7 +15,7 @@ FROM combined
 WHERE sector = "land-use_change_and_forestry"; 
 
 # Top 10 Countries By Deforestation Per Year 
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
@@ -29,7 +29,7 @@ ranked_combined
 WHERE ranked_combined.rank < 4 and sector = 'total_including_lucf';
 
 # Top Countries By Total GHG Emissions Per Years 
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
@@ -43,7 +43,7 @@ ranked_combined
 WHERE ranked_combined.rank < 4 and sector = 'total_including_lucf';
 
 # Top Countries By GHG Emissions Per Year, Per Total, Per LUCF Sector 
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
@@ -57,7 +57,7 @@ ranked_combined
 WHERE ranked_combined.rank < 4 and sector = 'land-use_change_and_forestry';
 
 # Per Year, take the average global coeff rate 
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
@@ -67,7 +67,7 @@ WHERE treeloss >= 0
 GROUP BY year; 
 
 # Per Year, Per ISO, gather the countries with the highest coeff 
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
@@ -103,7 +103,7 @@ FROM combined
 WHERE sector = "total_including_lucf"; 
 
 # Get YOY Growth In Terms of Treeloss (Globally)
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
@@ -116,7 +116,7 @@ FROM (
 GROUP BY year; 
 
 # Get YOY Growth in Total CO2 Emissions 
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
@@ -130,7 +130,7 @@ WHERE intermediate.year > 2001
 GROUP BY year; 
 
 # Get YOY Growth in LUCF CO2 Emissions 
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
@@ -144,7 +144,7 @@ WHERE intermediate.year > 2001
 GROUP BY year; 
 
 # Get The Top Countries By Treeloss Change Per Year
-INSERT OVERWRITE DIRECTORY '/user/<NETID>/<PATH>/<PATH>' 
+INSERT OVERWRITE DIRECTORY '/user/rmr557/project/output' 
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
